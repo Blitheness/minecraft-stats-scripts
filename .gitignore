@@ -1,1 +1,4 @@
 data/**/*.json
+vendor/
+stats.log
+.env
