@@ -1,4 +1,4 @@
 data/**/*.json
 vendor/
-stats.log
+logs/*.log
 .env
