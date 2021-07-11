@@ -1,5 +1,4 @@
 <?php
-require __DIR__ . '/vendor/autoload.php';
 require __DIR__ . '/bootstrap.php';
 
 use pcrov\JsonReader\JsonReader;
@@ -51,16 +50,21 @@ foreach($statsFileNames as $path) {
     $farmingStats = hydrateSugarCaneStatistic($farmingStats, $reader->value());
     
     $stats = [
-        'mining' => $miningStats,
+        'mining'  => $miningStats,
         'farming' => $farmingStats,
-        'slayer' => $slayerStats,
+        'slayer'  => $slayerStats,
         'cooking' => $cookingStats
     ];
     logger()->info('Statistics calculated', ['player' => $uuid, 'stats' => $stats]);
 
-    $client = new GuzzleHttp\Client();
-    $res = $client->request('POST', getenv('API_BASE'), $stats);
-
+    try {
+        $client = new GuzzleHttp\Client();
+        $res = $client->request('POST', getenv('API_BASE'), $stats);
+    }
+    catch(\Exception $e) {
+        logger()->error('HTTP Client Error', ['message' => $e->getMessage(), 'stack_trace' => $e->getTraceAsString()]);
+    }
+    
     logger()->info('API call made to update player statistics', ['player' => $uuid]);
 }
 
@@ -81,11 +85,11 @@ function hydrateHoeStatistic(array $stats, ?array $data): array
         return $stats;
     }
 
-    $stats['hoe_used'] += $data['minecraft:wooden_hoe'] ?? 0;
-    $stats['hoe_used'] += $data['minecraft:stone_hoe'] ?? 0;
-    $stats['hoe_used'] += $data['minecraft:iron_hoe'] ?? 0;
-    $stats['hoe_used'] += $data['minecraft:gold_hoe'] ?? 0;
-    $stats['hoe_used'] += $data['minecraft:diamond_hoe'] ?? 0;
+    $stats['hoe_used'] += $data['minecraft:wooden_hoe']    ?? 0;
+    $stats['hoe_used'] += $data['minecraft:stone_hoe']     ?? 0;
+    $stats['hoe_used'] += $data['minecraft:iron_hoe']      ?? 0;
+    $stats['hoe_used'] += $data['minecraft:gold_hoe']      ?? 0;
+    $stats['hoe_used'] += $data['minecraft:diamond_hoe']   ?? 0;
     $stats['hoe_used'] += $data['minecraft:netherite_hoe'] ?? 0;
 
     return $stats;
@@ -105,14 +109,14 @@ function hydrateBreedingStatistic(array $stats, ?array $data): array
 function getFarmingStats(?array $data): array
 {
     $stats = [
-        'breeding' => 0,
-        'carrots' => 0,
-        'hoe_used' => 0,
-        'melon' => 0,
-        'potatoes' => 0,
-        'pumpkin' => 0,
+        'breeding'   => 0,
+        'carrots'    => 0,
+        'hoe_used'   => 0,
+        'melon'      => 0,
+        'potatoes'   => 0,
+        'pumpkin'    => 0,
         'sugar_cane' => 0,
-        'wheat' => 0,
+        'wheat'      => 0,
     ];
 
     if($data === null) {
@@ -145,18 +149,18 @@ function getFarmingStats(?array $data): array
 function getCookingStats(?array $data): array
 {
     $stats = [
-        'beef' => 0,
-        'bread' => 0,
-        'cake' => 0,
-        'chicken' => 0,
-        'cookie' => 0,
-        'fish' => 0,
-        'kelp' => 0,
-        'mutton' => 0,
+        'beef'     => 0,
+        'bread'    => 0,
+        'cake'     => 0,
+        'chicken'  => 0,
+        'cookie'   => 0,
+        'fish'     => 0,
+        'kelp'     => 0,
+        'mutton'   => 0,
         'porkchop' => 0,
-        'potato' => 0,
-        'rabbit' => 0,
-        'stew' => 0,
+        'potato'   => 0,
+        'rabbit'   => 0,
+        'stew'     => 0,
     ];
 
     if($data === null) {
@@ -211,25 +215,25 @@ function getCookingStats(?array $data): array
 function getSlayerStats(?array $data): array
 {
     $stats = [
-        'creeper' => 0,
-        'drowned' => 0,
-        'enderman' => 0,
-        'ender_dragon' => 0,
-        'hoglin' => 0,
-        'husk' => 0,
-        'magma_cube' => 0,
-        'phantom' => 0,
-        'piglin' => 0,
-        'pillager' => 0,
-        'silverfish' => 0,
-        'skeleton' => 0,
-        'slime' => 0,
-        'spider' => 0,
-        'vindicator' => 0,
-        'witch' => 0,
-        'wither' => 0,
+        'creeper'         => 0,
+        'drowned'         => 0,
+        'enderman'        => 0,
+        'ender_dragon'    => 0,
+        'hoglin'          => 0,
+        'husk'            => 0,
+        'magma_cube'      => 0,
+        'phantom'         => 0,
+        'piglin'          => 0,
+        'pillager'        => 0,
+        'silverfish'      => 0,
+        'skeleton'        => 0,
+        'slime'           => 0,
+        'spider'          => 0,
+        'vindicator'      => 0,
+        'witch'           => 0,
+        'wither'          => 0,
         'wither_skeleton' => 0,
-        'zombie' => 0,
+        'zombie'          => 0,
     ];
 
     if($data === null) {
@@ -307,15 +311,15 @@ function getSlayerStats(?array $data): array
 function getMiningStats(?array $data): array
 {
     $stats = [
-        'coal' => 0,
-        'copper' => 0,
-        'diamonds' => 0,
+        'coal'      => 0,
+        'copper'    => 0,
+        'diamonds'  => 0,
         'glowstone' => 0,
-        'gold' => 0,
-        'iron' => 0,
-        'lapis' => 0,
-        'quartz' => 0,
-        'redstone' => 0,
+        'gold'      => 0,
+        'iron'      => 0,
+        'lapis'     => 0,
+        'quartz'    => 0,
+        'redstone'  => 0,
     ];
 
     if($data === null) {

@@ -1,4 +1,5 @@
 <?php
+require __DIR__ . '/vendor/autoload.php';
 
 use Monolog\Handler\RotatingFileHandler;
 use Symfony\Component\Dotenv\Dotenv;
@@ -8,8 +9,17 @@ use Monolog\Logger;
 (new Dotenv())->load(__DIR__.'/.env');
 
 // Set up logger
-$log = new Logger('log');
-$log->pushHandler(new RotatingFileHandler(__DIR__.'/logs/stats.log', 3, Logger::INFO, false, 0644, false));
+$logLevel = getenv('STATS_LOG_LEVEL');
+if($logLevel === false) {
+    $logLevel = $_ENV['STATS_LOG_LEVEL'];
+}
+try {
+    $log = new Logger('log');
+    $log->pushHandler(new RotatingFileHandler(__DIR__.'/logs/stats.log', 3, constant("Monolog\Logger::{$logLevel}"), false, 0644, false));
+}
+catch(Exception $e) {
+    fwrite(STDERR, 'Error setting up logger: ' . $e->getMessage());
+}
 
 // Get world from command-line
 $options = getopt('w:', ['world:']);
