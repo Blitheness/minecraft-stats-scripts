@@ -1,5 +1,6 @@
 <?php
 require __DIR__ . '/vendor/autoload.php';
+require __DIR__ . '/StatisticsService.php';
 
 use Monolog\Handler\RotatingFileHandler;
 use Symfony\Component\Dotenv\Dotenv;
