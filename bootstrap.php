@@ -1,5 +1,6 @@
 <?php
 require __DIR__ . '/vendor/autoload.php';
+require __DIR__ . '/AdvancementsService.php';
 require __DIR__ . '/StatisticsService.php';
 
 use Monolog\Handler\RotatingFileHandler;
@@ -10,9 +11,9 @@ use Monolog\Logger;
 (new Dotenv())->load(__DIR__.'/.env');
 
 // Set up logger
-$logLevel = getenv('STATS_LOG_LEVEL');
+$logLevel = getenv('LOG_LEVEL');
 if($logLevel === false) {
-    $logLevel = $_ENV['STATS_LOG_LEVEL'];
+    $logLevel = $_ENV['LOG_LEVEL'];
 }
 try {
     $log = new Logger('log');
@@ -22,9 +23,10 @@ catch(Exception $e) {
     fwrite(STDERR, 'Error setting up logger: ' . $e->getMessage());
 }
 
-// Get world from command-line
-$options = getopt('w:', ['world:']);
-$world = $options['w'] ?? $options['world'] ?? null;
+// Get world name and working directory from command-line
+$options = getopt('w:d', ['world-name:', 'working-directory']);
+$world = $options['w'] ?? $options['world-name'] ?? null;
+$directory = $options['d'] ?? $options['working-directory'] ?? null;
 if($world === null) {
     $msg = "You must specify a world name using -w or --world=";
     logger()->error($msg);
@@ -32,6 +34,8 @@ if($world === null) {
 }
 putenv('WORLD_NAME='.$world);
 $_ENV['WORLD_NAME'] = $world;
+putenv('WORKING_DIRECTORY='.$directory);
+$_ENV['WORKING_DIRECTORY'] = $directory;
 
 // Functions to expose utilities
 function logger(): Logger

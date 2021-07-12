@@ -6,15 +6,16 @@ class StatisticsService {
     private string $_world;
     private Client $_client;
 
-    public function __construct(string $world) {
+    public function __construct(string $world, ?string $directory = null) {
         $this->_world = $world;
-        logger()->info('>>' . getenv('API_BASE'));
-        $this->_client = new Client(['base_url' => getenv('API_BASE')]);
+        $this->_directory = $directory;
+        //logger()->info('>>' . getenv('API_BASE'));
+        //$this->_client = new Client(['base_url' => getenv('API_BASE')]);
     }
 
     public function ComputeStatistics() {
         $path = [
-            __DIR__,
+            $this->_directory ?? __DIR__,
             $this->_world,
             'stats',
             '*.json'
@@ -22,13 +23,12 @@ class StatisticsService {
         $pattern = implode(DIRECTORY_SEPARATOR, $path);
         $statsFileNames = glob($pattern, GLOB_NOSORT);
         
-        $client = new Client();
+        // $client = new Client();
 
         foreach($statsFileNames as $path) {
             $parts = explode(DIRECTORY_SEPARATOR, $path);
             $fileName = $parts[count($parts)-1];
             $uuid = str_replace('.json','',$fileName);
-            logger()->debug('Processing statistics', ['player' => $uuid, 'world' => $this->_world]);
         
             $reader = new JsonReader();
             
@@ -70,14 +70,14 @@ class StatisticsService {
                 ]
             );
         
-            try {
-                $res = $this->_client->request('POST', getenv('API_BASE'), []);
-            }
-            catch(\Exception $e) {
-                logger()->error('HTTP request failed', ['message' => $e->getMessage(), 'stack_trace' => $e->getTraceAsString()]);
-            }
+            // try {
+            //     $res = $this->_client->request('POST', getenv('API_BASE'), []);
+            // }
+            // catch(\Exception $e) {
+            //     logger()->error('HTTP request failed', ['message' => $e->getMessage(), 'stack_trace' => $e->getTraceAsString()]);
+            // }
         
-            logger()->info('API call made to update player statistics', ['player' => $uuid]);
+            // logger()->info('API call made to update player statistics', ['player' => $uuid]);
         }
     }
 
