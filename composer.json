@@ -1,6 +1,6 @@
 {
     "name": "blitheness/minecraft-stats-scripts",
-    "version": "0.1.0",
+    "version": "0.1.1",
     "require": {
         "guzzlehttp/guzzle": "^7.3",
         "symfony/dotenv": "^5.3",

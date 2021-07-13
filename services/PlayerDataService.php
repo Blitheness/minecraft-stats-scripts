@@ -29,7 +29,7 @@ class PlayerDataService
                 $apiKey,
             ],
             RequestOptions::HEADERS => [
-                'User-Agent' => 'minecraft-stats-scripts/0.1.0',
+                'User-Agent' => 'minecraft-stats-scripts/0.1.1',
                 'Accept' => 'application/json',
                 'X-Requested-With' => 'XMLHttpRequest',
             ],
