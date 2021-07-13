@@ -22,7 +22,6 @@ class PlayerDataService
         $apiBase = env('API_BASE');
         $apiKey = env('API_KEY');
 
-        // TODO: Request pool; cap the concurrent requests.
         $this->_httpClient = new Client([
             'base_uri' => $apiBase,
             RequestOptions::AUTH => [
