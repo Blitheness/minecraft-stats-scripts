@@ -62,6 +62,23 @@ function logger(): Logger
     return $log;
 }
 
+function env(string $key, ?string $default = '')
+{
+    $value = getenv($key);
+    if ($value === false)
+    {
+        if(array_key_exists($key, $_ENV))
+        {
+            $value = $_ENV[$key];
+        }
+        else
+        {
+            $value = $default;
+        }
+    }
+    return $value;
+}
+
 // Execution time helper
 function rutime($ru, $rus, $index) {
     return ($ru["ru_$index.tv_sec"]*1000 + intval($ru["ru_$index.tv_usec"]/1000))

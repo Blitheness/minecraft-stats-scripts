@@ -11,6 +11,9 @@ class AdvancementsRepository
         $this->_basePath = implode(DIRECTORY_SEPARATOR, $basePathParts);
     }
 
+    /**
+     * @return array Paths to player advancement JSON files
+     */
     public function getAdvancementFilePaths(): array
     {
         $pattern = implode(DIRECTORY_SEPARATOR, [$this->_basePath, '*.json']);
@@ -20,6 +23,7 @@ class AdvancementsRepository
 
     /**
      * @param string $uuid Player UUID
+     * @return array Player advancements
      */
     public function getAdvancementsForPlayer(string $uuid): array
     {
@@ -58,12 +62,9 @@ class AdvancementsRepository
                         {
                             $mostRecentDate = new DateTimeImmutable($date);
                         }
-                        else
+                        else if ($mostRecentDate < $currentDate)
                         {
-                            if($mostRecentDate < $currentDate)
-                            {
-                                $mostRecentDate = $currentDate;
-                            }
+                            $mostRecentDate = $currentDate;
                         }
                     }
                     $advancement['completed_at'] = $mostRecentDate;
