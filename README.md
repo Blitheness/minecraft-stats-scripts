@@ -33,37 +33,32 @@ Accept: application/json
 Content-Type: application/json
 
 {
-  "adventure/sleep_in_bed": {
-    "complete": true,
-    "completed_at": {
-      "date": "2021-07-03 16:54:09.000000",
-      "timezone_type": 1,
-      "timezone": "+00:00"
+  "player_uuid": "00000000-0000-0000-0000-000000000001",
+  "data": {
+    "story/obtain_armor": {
+      "complete": true,
+      "completed_at": {
+        "date": "2021-07-03 17:32:38.000000",
+        "timezone_type": 1,
+        "timezone": "+00:00"
+      }
+    },
+    "husbandry/balanced_diet": {
+      "complete": false,
+      "completed_at": null
+    },
+    "husbandry/bred_all_animals": {
+      "complete": false,
+      "completed_at": null
+    },
+    "story/root": {
+      "complete": true,
+      "completed_at": {
+        "date": "2021-07-03 16:12:43.000000",
+        "timezone_type": 1,
+        "timezone": "+00:00"
+      }
     }
-  },
-  "husbandry/tame_an_animal": {
-    "complete": true,
-    "completed_at": {
-      "date": "2021-07-04 13:45:10.000000",
-      "timezone_type": 1,
-      "timezone": "+00:00"
-    }
-  },
-  "husbandry/make_a_sign_glow": {
-    "complete": true,
-    "completed_at": {
-      "date": "2021-07-05 09:13:38.000000",
-      "timezone_type": 1,
-      "timezone": "+00:00"
-    }
-  },
-  "husbandry/balanced_diet": {
-    "complete": false,
-    "completed_at": null
-  },
-  "husbandry/bred_all_animals": {
-    "complete": false,
-    "completed_at": null
   }
 }
 ```
@@ -76,61 +71,64 @@ Accept: application/json
 Content-Type: application/json
 
 {
-  "mining": {
-    "coal": 513,
-    "copper": 14,
-    "diamonds": 39,
-    "glowstone": 30,
-    "gold": 90,
-    "iron": 335,
-    "lapis": 19,
-    "quartz": 245,
-    "redstone": 238
-  },
-  "farming": {
-    "breeding": 370,
-    "carrots": 8,
-    "hoe_used": 19,
-    "melon": 1,
-    "potatoes": 2,
-    "pumpkin": 1,
-    "sugar_cane": 567,
-    "wheat": 1783
-  },
-  "slayer": {
-    "creeper": 49,
-    "drowned": 17,
-    "enderman": 2412,
-    "ender_dragon": 0,
-    "hoglin": 0,
-    "husk": 2,
-    "magma_cube": 156,
-    "phantom": 10,
-    "piglin": 0,
-    "pillager": 0,
-    "silverfish": 0,
-    "skeleton": 273,
-    "slime": 0,
-    "spider": 47,
-    "vindicator": 0,
-    "witch": 1,
-    "wither": 0,
-    "wither_skeleton": 9,
-    "zombie": 128
-  },
-  "cooking": {
-    "beef": 0,
-    "bread": 63,
-    "cake": 0,
-    "chicken": 0,
-    "cookie": 0,
-    "fish": 0,
-    "kelp": 0,
-    "mutton": 0,
-    "porkchop": 0,
-    "potato": 0,
-    "rabbit": 0,
-    "stew": 0
+  "player_uuid": "00000000-0000-0000-0000-000000000001",
+  "data": {
+    "mining": {
+      "coal": 64,
+      "copper": 0,
+      "diamonds": 0,
+      "glowstone": 0,
+      "gold": 0,
+      "iron": 40,
+      "lapis": 0,
+      "quartz": 0,
+      "redstone": 0
+    },
+    "farming": {
+      "breeding": 0,
+      "carrots": 0,
+      "hoe_used": 214,
+      "melon": 0,
+      "potatoes": 0,
+      "pumpkin": 0,
+      "sugar_cane": 101,
+      "wheat": 185
+    },
+    "slayer": {
+      "creeper": 0,
+      "drowned": 0,
+      "enderman": 0,
+      "ender_dragon": 0,
+      "hoglin": 0,
+      "husk": 0,
+      "magma_cube": 0,
+      "phantom": 0,
+      "piglin": 0,
+      "pillager": 1,
+      "silverfish": 0,
+      "skeleton": 3,
+      "slime": 0,
+      "spider": 0,
+      "vindicator": 0,
+      "witch": 0,
+      "wither": 0,
+      "wither_skeleton": 0,
+      "zombie": 4
+    },
+    "cooking": {
+      "beef": 0,
+      "bread": 43,
+      "cake": 0,
+      "chicken": 0,
+      "cookie": 0,
+      "fish": 0,
+      "kelp": 0,
+      "mutton": 0,
+      "porkchop": 0,
+      "potato": 0,
+      "rabbit": 0,
+      "stew": 0
+    }
   }
 }
 ```

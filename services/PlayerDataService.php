@@ -46,10 +46,14 @@ class PlayerDataService
         foreach($advancementPaths as $path) {
             $uuid = $this->getUuidFromPath($path);
             $advancements = $this->_advancementsRepo->getAdvancementsForPlayer($uuid);
+            $payload = [
+                'player_uuid' => $uuid,
+                'data' => $advancements,
+            ];
             $promises[] = $this->_httpClient->requestAsync(
                 'POST', 
-                env('ADVANCEMENTS_ENDPOINT'), 
-                [RequestOptions::JSON => $advancements]
+                env('ADVANCEMENTS_ENDPOINT'),
+                [RequestOptions::JSON => $payload]
             );
         }
 
@@ -58,10 +62,14 @@ class PlayerDataService
         foreach($statisticsPaths as $path) {
             $uuid = $this->getUuidFromPath($path);
             $statistics = $this->_statisticsRepo->getStatisticsForPlayer($uuid);
+            $payload = [
+                'player_uuid' => $uuid,
+                'data' => $statistics,
+            ];
             $promises[] = $this->_httpClient->requestAsync(
                 'POST', 
                 env('STATISTICS_ENDPOINT'), 
-                [RequestOptions::JSON => $statistics]
+                [RequestOptions::JSON => $payload]
             );
         }
 
