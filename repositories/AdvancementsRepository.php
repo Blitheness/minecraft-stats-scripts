@@ -41,21 +41,38 @@ class AdvancementsRepository
             if ($this->isNotRecipeAdvancement($reader->name()))
             {
                 $advancementName = $this->stripAdvancementNamespace($reader->name());
-                $advancementComplete = $reader->value()['done'] ?? false;
-                $advancementData = ['complete' => $advancementComplete, 'completed_at' => null];
+                $advancementData = $reader->value();
+
+                $advancement = [
+                    'complete' => $advancementData['done'] ?? false, 
+                    'completed_at' => null
+                ];
                 
-                // TODO determine date/time of advancement by max date in criteria
-                if ($advancementComplete)
+                if ($advancement['complete'] && is_array($advancementData['criteria']))
                 {
-
+                    $mostRecentDate = null;
+                    foreach ($advancementData['criteria'] as $date)
+                    {
+                        $currentDate = new DateTimeImmutable($date);
+                        if ($mostRecentDate === null)
+                        {
+                            $mostRecentDate = new DateTimeImmutable($date);
+                        }
+                        else
+                        {
+                            if($mostRecentDate < $currentDate)
+                            {
+                                $mostRecentDate = $currentDate;
+                            }
+                        }
+                    }
+                    $advancement['completed_at'] = $mostRecentDate;
                 }
-                //$advancementData['completed_at'] = '';
 
-                $advancements[$advancementName] = $advancementData;
+                $advancements[$advancementName] = $advancement;
             }
             $reader->next();
         }
-
         logger()->debug('Advancements found', ['player' => $uuid, 'advancements' => $advancements]);
 
         return $advancements;
@@ -71,6 +88,6 @@ class AdvancementsRepository
 
     private function stripAdvancementNamespace(string $advancementName): string
     {
-        return explode(':', $advancementName, 1)[0];
+        return explode(':', $advancementName, 2)[1];
     }
 }
