@@ -1,89 +1,78 @@
 <?php
-use GuzzleHttp\Client;
 use pcrov\JsonReader\JsonReader;
 
-class StatisticsService {
-    private string $_world;
-    private Client $_client;
+class StatisticsRepository
+{
+    private string $_basePath;
 
-    public function __construct(string $world, ?string $directory = null) {
-        $this->_world = $world;
-        $this->_directory = $directory;
-        //logger()->info('>>' . getenv('API_BASE'));
-        //$this->_client = new Client(['base_url' => getenv('API_BASE')]);
+    public function __construct(array $basePathParts)
+    {
+        $basePathParts[] = 'stats';
+        $this->_basePath = implode(DIRECTORY_SEPARATOR, $basePathParts);
     }
 
-    public function ComputeStatistics() {
-        $path = [
-            $this->_directory ?? __DIR__,
-            $this->_world,
-            'stats',
-            '*.json'
-        ];
-        $pattern = implode(DIRECTORY_SEPARATOR, $path);
-        $statsFileNames = glob($pattern, GLOB_NOSORT);
-        
-        // $client = new Client();
+    public function getStatisticsFilePaths(): array
+    {
+        $pattern = implode(DIRECTORY_SEPARATOR, [$this->_basePath, '*.json']);
+        return glob($pattern, GLOB_NOSORT);
+    }
 
-        foreach($statsFileNames as $path) {
-            $parts = explode(DIRECTORY_SEPARATOR, $path);
-            $fileName = $parts[count($parts)-1];
-            $uuid = str_replace('.json','',$fileName);
+    /**
+     * @param string $uuid Player UUID
+     */
+    public function getStatisticsForPlayer(string $uuid): array
+    {
+        $path = implode(DIRECTORY_SEPARATOR, [$this->_basePath, $uuid . '.json']);
+
+        $reader = new JsonReader();
         
-            $reader = new JsonReader();
-            
-            $reader->open($path);
-            $reader->read('minecraft:mined');
-            $miningStats = $this->getMiningStats($reader->value());
-            $farmingStats = $this->getFarmingStats($reader->value());
+        $reader->open($path);
+        $reader->read('minecraft:mined');
+        $miningStats = $this->getMiningStats($reader->value());
+        $farmingStats = $this->getFarmingStats($reader->value());
+    
+        $reader->open($path);
+        $reader->read('minecraft:killed');
+        $slayerStats = $this->getSlayerStats($reader->value());
+    
+        $reader->open($path);
+        $reader->read('minecraft:crafted');
+        $cookingStats = $this->getCookingStats($reader->value());
+    
+        $reader->open($path);
+        $reader->read('minecraft:custom');
+        $farmingStats = $this->hydrateBreedingStatistic($farmingStats, $reader->value());
+    
+        $reader->open($path);
+        $reader->read('minecraft:used');
+        $farmingStats = $this->hydrateHoeStatistic($farmingStats, $reader->value());
+    
+        $reader->open($path);
+        $reader->read('minecraft:picked_up');
+        $farmingStats = $this->hydrateSugarCaneStatistic($farmingStats, $reader->value());
         
-            $reader->open($path);
-            $reader->read('minecraft:killed');
-            $slayerStats = $this->getSlayerStats($reader->value());
+        $stats = [
+            'mining'  => $miningStats,
+            'farming' => $farmingStats,
+            'slayer'  => $slayerStats,
+            'cooking' => $cookingStats,
+        ];
         
-            $reader->open($path);
-            $reader->read('minecraft:crafted');
-            $cookingStats = $this->getCookingStats($reader->value());
+        logger()->debug(
+            'Statistics calculated', 
+            [
+                'player' => $uuid, 
+                'stats' => $stats,
+            ]
+        );
         
-            $reader->open($path);
-            $reader->read('minecraft:custom');
-            $farmingStats = $this->hydrateBreedingStatistic($farmingStats, $reader->value());
-        
-            $reader->open($path);
-            $reader->read('minecraft:used');
-            $farmingStats = $this->hydrateHoeStatistic($farmingStats, $reader->value());
-        
-            $reader->open($path);
-            $reader->read('minecraft:picked_up');
-            $farmingStats = $this->hydrateSugarCaneStatistic($farmingStats, $reader->value());
-            
-            logger()->debug(
-                'Statistics calculated', 
-                [
-                    'player' => $uuid, 
-                    'stats' => [
-                        'mining'  => $miningStats,
-                        'farming' => $farmingStats,
-                        'slayer'  => $slayerStats,
-                        'cooking' => $cookingStats,
-                    ],
-                ]
-            );
-        
-            // try {
-            //     $res = $this->_client->request('POST', getenv('API_BASE'), []);
-            // }
-            // catch(\Exception $e) {
-            //     logger()->error('HTTP request failed', ['message' => $e->getMessage(), 'stack_trace' => $e->getTraceAsString()]);
-            // }
-        
-            // logger()->info('API call made to update player statistics', ['player' => $uuid]);
-        }
+        return $stats;
     }
 
     private function hydrateSugarCaneStatistic(array $stats, ?array $data): array
     {
-        if($data === null) {
+        if ($data === null)
+        {
             return $stats;
         }
 
@@ -94,7 +83,8 @@ class StatisticsService {
 
     private function hydrateHoeStatistic(array $stats, ?array $data): array
     {
-        if($data === null) {
+        if ($data === null)
+        {
             return $stats;
         }
 
@@ -110,7 +100,8 @@ class StatisticsService {
 
     private function hydrateBreedingStatistic(array $stats, ?array $data): array
     {
-        if($data === null) {
+        if ($data === null)
+        {
             return $stats;
         }
 
@@ -132,12 +123,15 @@ class StatisticsService {
             'wheat'      => 0,
         ];
 
-        if($data === null) {
+        if ($data === null)
+        {
             return $stats;
         }
 
-        foreach($data as $item => $amount) {
-            switch($item) {
+        foreach ($data as $item => $amount)
+        {
+            switch ($item)
+            {
                 case 'minecraft:carrots':
                     $stats['carrots'] += $amount;
                     break;
@@ -176,12 +170,15 @@ class StatisticsService {
             'stew'     => 0,
         ];
 
-        if($data === null) {
+        if ($data === null)
+        {
             return $stats;
         }
 
-        foreach($data as $item => $amount) {
-            switch($item) {
+        foreach ($data as $item => $amount)
+        {
+            switch ($item)
+            {
                 case 'minecraft:baked_potato':
                     $stats['potato'] += $amount;
                     break;
@@ -249,12 +246,15 @@ class StatisticsService {
             'zombie'          => 0,
         ];
 
-        if($data === null) {
+        if ($data === null)
+        {
             return $stats;
         }
 
-        foreach($data as $item => $amount) {
-            switch($item) {
+        foreach ($data as $item => $amount)
+        {
+            switch ($item)
+            {
                 case 'minecraft:creeper':
                     $stats['creeper'] += $amount;
                     break;
@@ -335,12 +335,15 @@ class StatisticsService {
             'redstone'  => 0,
         ];
 
-        if($data === null) {
+        if ($data === null)
+        {
             return $stats;
         }
 
-        foreach($data as $item => $amount) {
-            switch($item) {
+        foreach ($data as $item => $amount)
+        {
+            switch ($item)
+            {
                 case 'minecraft:diamond_ore':
                 case 'minecraft:deepslate_diamond_ore':
                     $stats['diamonds'] += $amount;
@@ -380,7 +383,7 @@ class StatisticsService {
                     break;
             }
         }
-
+        
         return $stats;
     }
 }
