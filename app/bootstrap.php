@@ -42,11 +42,14 @@ catch (Exception $e)
 }
 
 // Get world name and working directory from command-line arguments
-$options = getopt('w:d', ['world-name:', 'working-directory']);
-$world = $options['w'] ?? $options['world-name'] ?? null;
-$directory = $options['d'] ?? $options['working-directory'] ?? null;
+$options = getopt('w:d::', ['world-name:', 'working-directory::']);
+$world = $options['w'] ?? $options['world-name'];
+$directory = null;
+if(array_key_exists('working-directory', $options)) {
+    $directory = $options['d'] ?? $options['working-directory'];
+}
 if($world === null) {
-    $msg = "You must specify a world name using -w or --world=";
+    $msg = "You must specify a world name using --world-name=";
     logger()->error($msg);
     throw new InvalidArgumentException($msg);
 }
@@ -65,6 +68,9 @@ function logger(): Logger
 function env(string $key, ?string $default = '')
 {
     $value = getenv($key);
+    if($value === '') {
+        $value = null;
+    }
     if ($value === false)
     {
         if(array_key_exists($key, $_ENV))

@@ -16,6 +16,12 @@ class PlayerDataService
             $directory ?? APP_ROOT,
             $world,
         ];
+
+        if (! is_dir(implode(DIRECTORY_SEPARATOR, $basePath))) {
+            logger()->error('World not found', $basePath);
+            exit;
+        }
+
         $this->_advancementsRepo = new AdvancementsRepository($basePath);
         $this->_statisticsRepo = new StatisticsRepository($basePath);
 

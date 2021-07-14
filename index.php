@@ -2,10 +2,11 @@
 define('APP_ROOT', __DIR__);
 require implode(DIRECTORY_SEPARATOR, [APP_ROOT, 'app', 'bootstrap.php']);
 
-$world = getenv('WORLD_NAME');
-logger()->info('Loading data for world...', ['world' => $world]);
+$world = env('WORLD_NAME');
+$directory = env('WORKING_DIRECTORY', null);
+logger()->info('Loading data...', ['world' => $world, 'working_directory' => $directory]);
 
-$dataService = new PlayerDataService($world);
+$dataService = new PlayerDataService($world, $directory);
 $dataService->processPlayerData();
 
 // Determine execution time

@@ -17,12 +17,8 @@ Run on a schedule (cron job), at an interval of your choice. I suggest every 30 
 ```
 php index.php --working-directory="/home/minecraft" --world-name="world"
 ```
-or (short-hand arguments):
-```
-php index.php -d "/home/minecraft" -w "world"
-```
 
-The working directory argument is optional. It will default to the directory where the script is located.
+The working directory argument is optional. It will default to the directory where the script is located. Do not append a slash to the working directory.
 
 ## Example API Calls
 ### Advancements
