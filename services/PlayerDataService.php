@@ -51,7 +51,7 @@ class PlayerDataService
                 'data' => $advancements,
             ];
             $promises[] = $this->_httpClient->requestAsync(
-                'POST', 
+                'PUT', 
                 env('ADVANCEMENTS_ENDPOINT'),
                 [RequestOptions::JSON => $payload]
             );
@@ -67,7 +67,7 @@ class PlayerDataService
                 'data' => $statistics,
             ];
             $promises[] = $this->_httpClient->requestAsync(
-                'POST', 
+                'PUT', 
                 env('STATISTICS_ENDPOINT'), 
                 [RequestOptions::JSON => $payload]
             );
