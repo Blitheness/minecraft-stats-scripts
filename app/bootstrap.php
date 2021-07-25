@@ -12,7 +12,7 @@ use Monolog\Logger;
 $rustart = getrusage();
 
 // Read in environment variables
-$dotenvPath = implode(DIRECTORY_SEPARATOR, ['.env']);
+$dotenvPath = implode(DIRECTORY_SEPARATOR, [APP_ROOT, '.env']);
 try
 {
     (new Dotenv())->load($dotenvPath);
