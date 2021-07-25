@@ -30,7 +30,7 @@ if ($logLevel === false)
     $logLevel = $_ENV['LOG_LEVEL'];
 }
 
-$logfilePath = implode(DIRECTORY_SEPARATOR, ['logs', 'stats.log']);
+$logfilePath = implode(DIRECTORY_SEPARATOR, [APP_ROOT, 'logs', 'stats.log']);
 try
 {
     $log = new Logger('log');
