@@ -1,8 +1,8 @@
 <?php
 require implode(DIRECTORY_SEPARATOR, [APP_ROOT, 'vendor', 'autoload.php']);
-require implode(DIRECTORY_SEPARATOR, [APP_ROOT, 'repositories', 'AdvancementsRepository.php']);
-require implode(DIRECTORY_SEPARATOR, [APP_ROOT, 'repositories', 'StatisticsRepository.php']);
-require implode(DIRECTORY_SEPARATOR, [APP_ROOT, 'services', 'PlayerDataService.php']);
+require implode(DIRECTORY_SEPARATOR, [APP_ROOT, 'app', 'repositories', 'AdvancementsRepository.php']);
+require implode(DIRECTORY_SEPARATOR, [APP_ROOT, 'app', 'repositories', 'StatisticsRepository.php']);
+require implode(DIRECTORY_SEPARATOR, [APP_ROOT, 'app', 'services', 'PlayerDataService.php']);
 
 use Monolog\Handler\RotatingFileHandler;
 use Symfony\Component\Dotenv\Dotenv;
