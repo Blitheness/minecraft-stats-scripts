@@ -328,6 +328,7 @@ class StatisticsRepository
             'coal'           => 0,
             'copper'         => 0,
             'diamonds'       => 0,
+            'emerald'        => 0,
             'glowstone'      => 0,
             'gold'           => 0,
             'iron'           => 0,
@@ -375,6 +376,7 @@ class StatisticsRepository
                     $stats['copper'] += $amount;
                     break;
                 case 'minecraft:nether_gold_ore':
+                case 'minecraft:gilded_blackstone':
                     $stats['gold'] += (int) ceil($amount / 9);
                     break;
                 case 'minecraft:gold_ore':
