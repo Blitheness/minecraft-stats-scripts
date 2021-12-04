@@ -324,15 +324,16 @@ class StatisticsRepository
     private function getMiningStats(?array $data): array
     {
         $stats = [
-            'coal'      => 0,
-            'copper'    => 0,
-            'diamonds'  => 0,
-            'glowstone' => 0,
-            'gold'      => 0,
-            'iron'      => 0,
-            'lapis'     => 0,
-            'quartz'    => 0,
-            'redstone'  => 0,
+            'ancient_debris' => 0,
+            'coal'           => 0,
+            'copper'         => 0,
+            'diamonds'       => 0,
+            'glowstone'      => 0,
+            'gold'           => 0,
+            'iron'           => 0,
+            'lapis'          => 0,
+            'quartz'         => 0,
+            'redstone'       => 0,
         ];
 
         if ($data === null)
@@ -344,6 +345,9 @@ class StatisticsRepository
         {
             switch ($item)
             {
+                case 'minecraft:ancient_debris':
+                    $stats['ancient_debris'] += $amount;
+                    break;
                 case 'minecraft:diamond_ore':
                 case 'minecraft:deepslate_diamond_ore':
                     $stats['diamonds'] += $amount;
