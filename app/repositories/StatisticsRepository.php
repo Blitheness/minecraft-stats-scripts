@@ -353,6 +353,10 @@ class StatisticsRepository
                 case 'minecraft:deepslate_diamond_ore':
                     $stats['diamonds'] += $amount;
                     break;
+                case 'minecraft:emerald_ore':
+                case 'minecraft:deepslate_emerald_ore':
+                    $stats['emerald'] += $amount;
+                    break;
                 case 'minecraft:glowstone':
                     $stats['glowstone'] += $amount;
                     break;
