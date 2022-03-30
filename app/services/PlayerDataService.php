@@ -83,7 +83,7 @@ class PlayerDataService
         try
         {
             $promiseIterator = new EachPromise($promises, [
-                'concurrency' => 5,
+                'concurrency' => 2,
                 'rejected' => function(RequestException $e) {
                     logger()->error('HTTP Request Failed', [
                         'method' => $e->getRequest()->getMethod(),
