@@ -45,21 +45,17 @@ class PlayerDataService
 
     public function processPlayerData()
     {
-        $promises = [];
-
         // Advancements
         $advancementPaths = $this->_advancementsRepo->getAdvancementFilePaths();
         foreach($advancementPaths as $path) {
             $uuid = $this->getUuidFromPath($path);
             $advancements = $this->_advancementsRepo->getAdvancementsForPlayer($uuid);
-            $payload = [
-                'player_uuid' => $uuid,
-                'data' => $advancements,
-            ];
-            $promises[] = $this->_httpClient->requestAsync(
-                'PUT', 
-                env('ADVANCEMENTS_ENDPOINT'),
-                [RequestOptions::JSON => $payload]
+            $this->makeJsonPutRequest(
+                env('ADVANCEMENTS_ENDPOINT'), 
+                [
+                    'player_uuid' => $uuid,
+                    'data' => $advancements,
+                ]
             );
         }
 
@@ -68,37 +64,38 @@ class PlayerDataService
         foreach($statisticsPaths as $path) {
             $uuid = $this->getUuidFromPath($path);
             $statistics = $this->_statisticsRepo->getStatisticsForPlayer($uuid);
-            $payload = [
-                'player_uuid' => $uuid,
-                'data' => $statistics,
-            ];
-            $promises[] = $this->_httpClient->requestAsync(
-                'PUT', 
+            $this->makeJsonPutRequest(
                 env('STATISTICS_ENDPOINT'), 
-                [RequestOptions::JSON => $payload]
+                [
+                    'player_uuid' => $uuid,
+                    'data' => $statistics,
+                ]
             );
         }
+    }
 
-        // Wait for API calls to complete
-        try
-        {
-            $promiseIterator = new EachPromise($promises, [
-                'concurrency' => 2,
-                'rejected' => function(RequestException $e) {
-                    logger()->error('HTTP Request Failed', [
-                        'method' => $e->getRequest()->getMethod(),
-                        'target' => $e->getRequest()->getRequestTarget(),
-                        'status_code' => $e->getResponse()->getStatusCode(), 
-                        'error_message' => $e->getMessage()
-                    ]);
-                }
-            ]);
-            $promiseIterator->promise()->wait();
-        }
-        catch (Exception $e)
-        {
-            logger()->error('HTTP Client Error', [$e->getMessage()]);
-        }
+    private function makeJsonPutRequest(string $endpoint, array $payload): void
+    {
+        $this->_httpClient
+            ->putAsync(
+                $endpoint, 
+                [RequestOptions::JSON => $payload]
+            )
+            ->then(
+                null, 
+                function(RequestException $e) { $this->logFailedRequest($e); }
+            )
+            ->wait();
+    }
+
+    private function logFailedRequest(RequestException $exception): void
+    {
+        logger()->error('HTTP Request Failed', [
+            'method' => $exception->getRequest()->getMethod(),
+            'target' => $exception->getRequest()->getRequestTarget(),
+            'status_code' => $exception->getResponse()->getStatusCode(), 
+            'error_message' => $exception->getMessage()
+        ]);
     }
 
     private function getUuidFromPath(string $path): string
